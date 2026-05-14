@@ -45,6 +45,7 @@ def atacar_mob(cx, cy):
     ay += random.randint(-3, 3)
 
     mover_mouse(ax, ay)
+    time.sleep(0.05) # Pequeno delay para o jogo registrar o foco
     
     if USE_ARDUINO and hardware_mouse:
         hardware_mouse.click(button='right')
@@ -59,6 +60,7 @@ def fazer_loot(cx, cy):
     ax, ay = coord_absoluta(cx, cy)
     
     mover_mouse(ax, ay)
+    time.sleep(0.05)
 
     if USE_ARDUINO and hardware_mouse:
         pyautogui.keyDown('alt')
