@@ -64,8 +64,10 @@ def main():
             if mobs:
                 # Debug Visual: Desenha nos mobs encontrados
                 if DEBUG_MODE:
-                    for (mx, my, mw, mh) in mobs:
-                        cv2.rectangle(frame_atual, (mx-mw//2, my-mh//2), (mx+mw//2, my+mh//2), (0, 255, 0), 2)
+                    for (mx, my, ma) in mobs:
+                        # Desenha um quadrado baseado na rea (ma)
+                        r = int(ma**0.5) # Raio aproximado pela raiz da rea
+                        cv2.rectangle(frame_atual, (mx-r//2, my-r//2), (mx+r//2, my+r//2), (0, 255, 0), 2)
 
                 alvo = max(mobs, key=lambda m: m[2])
                 cx, cy = alvo[0], alvo[1]
