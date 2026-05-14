@@ -4,3 +4,4 @@ pyautogui
 keyboard
 numpy
 pyserial
+pymem

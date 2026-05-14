@@ -23,3 +23,18 @@ TECLA_LOOT   = 'z'        # Alt+click ou tecla de loot
 USE_ARDUINO = True        # Altere para False se quiser usar PyAutoGUI
 ARDUINO_PORT = 'COM10'     # Ajuste para a sua porta (ex: COM3, COM4)
 ARDUINO_BAUD = 115200
+
+# Offsets de Memria (Endereos Hex)
+PROCESS_NAME = "ragexe.exe"  # Nome do processo do RO (ajuste se necessrio)
+
+OFFSETS = {
+    "HP_ATUAL": 0x1684B48,
+    "HP_MAX":   0x1684B4C,
+    "SP_ATUAL": 0x1684B50,
+    "PLAYER_X": 0x12D7964,
+    "PLAYER_Y": 0x12D7968
+}
+
+# Configuraes de Autopot
+AUTO_POT_HP_PERCENT = 70  # Usa poo se HP < 70%
+TECLA_POT_HP = 'f1'
