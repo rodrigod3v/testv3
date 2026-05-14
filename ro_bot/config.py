@@ -21,5 +21,5 @@ TECLA_LOOT   = 'z'        # Alt+click ou tecla de loot
 
 # Configuraes do Arduino Leonardo (Hardware Mouse)
 USE_ARDUINO = True        # Altere para False se quiser usar PyAutoGUI
-ARDUINO_PORT = 'COM3'     # Ajuste para a sua porta (ex: COM3, COM4)
+ARDUINO_PORT = 'COM10'     # Ajuste para a sua porta (ex: COM3, COM4)
 ARDUINO_BAUD = 115200
