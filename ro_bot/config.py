@@ -43,7 +43,7 @@ ARDUINO_PORT = 'COM10'     # Ajuste para a sua porta (ex: COM3, COM4)
 ARDUINO_BAUD = 115200
 
 # Offsets de Memria (Endereos Hex)
-PROCESS_NAME = "ragexe.exe"  # Nome do processo do RO (ajuste se necessrio)
+PROCESS_NAME = "Ragexe.exe"  # Nome exato do processo do RO
 
 OFFSETS = {
     "HP_ATUAL": 0x1684B48,
