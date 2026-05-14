@@ -6,10 +6,11 @@ API_KEY = "SUA_API_KEY_AQUI"
 
 def baixar():
     rf = Roboflow(api_key=API_KEY)
+    # Configurado para o dataset que voc encontrou
     project = rf.workspace("pdiaps").project("poring")
-    version = project.version(1) # Verifique se a verso 1  a mais recente
+    version = project.version(1)
     
-    # Baixa o dataset formatado para YOLOv8
+    # Baixa no formato YOLOv8
     dataset = version.download("yolov8")
     
     print(f"[*] Dataset baixado em: {dataset.location}")
