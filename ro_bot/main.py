@@ -6,7 +6,7 @@ from capture   import capturar
 from detector  import detectar_movimento, confirmar_com_template
 from attacker  import atacar_mob
 from memory_reader import MemoryReader
-from config import AUTO_POT_HP_PERCENT, TECLA_POT_HP, TECLA_START, TECLA_STOP
+from config import AUTO_POT_HP_PERCENT, TECLA_POT_HP, TECLA_START, TECLA_STOP, DEBUG_MODE, GAME_WINDOW
 
 # Carrega sprites dos mobs da pasta /sprites
 def carregar_templates(pasta="sprites"):
@@ -22,6 +22,11 @@ def carregar_templates(pasta="sprites"):
 
 def main():
     print(f"--- Ragnarok Bot MVP ---")
+    if not GAME_WINDOW:
+        print("[!] Janela do Ragnarok NO encontrada. Verifique o ttulo no config.py")
+        return
+        
+    print(f"Janela detectada em: {GAME_WINDOW['left']}, {GAME_WINDOW['top']}")
     print(f"Aguardando comando: [{TECLA_START.upper()}] para Iniciar | [{TECLA_STOP.upper()}] para Sair")
     
     templates = carregar_templates()
@@ -46,7 +51,6 @@ def main():
             agora = time.time()
             if agora - ultimo_log_memoria > 2:
                 x, y = mem.ler_posicao()
-                # print(f"HP {hp_atual:.1f}% | Pos: {x}, {y}")
                 ultimo_log_memoria = agora
 
         # 2. Viso Computacional (Ataque)
@@ -58,6 +62,11 @@ def main():
                 mobs = confirmar_com_template(frame_atual, mobs, templates)
 
             if mobs:
+                # Debug Visual: Desenha nos mobs encontrados
+                if DEBUG_MODE:
+                    for (mx, my, mw, mh) in mobs:
+                        cv2.rectangle(frame_atual, (mx-mw//2, my-mh//2), (mx+mw//2, my+mh//2), (0, 255, 0), 2)
+
                 alvo = max(mobs, key=lambda m: m[2])
                 cx, cy = alvo[0], alvo[1]
 
@@ -66,9 +75,16 @@ def main():
                     atacar_mob(cx, cy)
                     ultimo_ataque = agora
 
+        # Mostrar janela de Debug
+        if DEBUG_MODE:
+            cv2.imshow("Bot Vision - Debug", frame_atual)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
         frame_ant = frame_atual
         time.sleep(INTERVALO_FRAMES)
 
+    cv2.destroyAllWindows()
     print("Bot finalizado com sucesso.")
 
 if __name__ == "__main__":

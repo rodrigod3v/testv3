@@ -6,17 +6,23 @@ WINDOW_TITLE = "Ragnarok"
 def detectar_janela():
     """Busca a janela do jogo e retorna suas coordenadas e tamanho."""
     try:
-        win = gw.getWindowsWithTitle(WINDOW_TITLE)[0]
-        # Adicionamos offsets para ignorar as bordas da janela do Windows (Title bar)
+        janelas = gw.getWindowsWithTitle(WINDOW_TITLE)
+        if not janelas:
+            return None
+            
+        win = janelas[0]
+        # Log para voc conferir no terminal
+        print(f"[*] Janela encontrada: '{win.title}' em X:{win.left} Y:{win.top}")
+        
         return {
-            "top": win.top + 30, # Offset aproximado da barra de ttulo
+            "top": win.top + 32, # Ajuste para barra de ttulo
             "left": win.left + 8, 
             "width": 1024,
             "height": 768
         }
-    except:
-        print(f"Janela '{WINDOW_TITLE}' no encontrada. Usando valores padro.")
-        return {"top": 0, "left": 0, "width": 1024, "height": 768}
+    except Exception as e:
+        print(f"[!] Erro ao buscar janela: {e}")
+        return None
 
 GAME_WINDOW = detectar_janela()
 
@@ -60,3 +66,6 @@ TECLA_POT_HP = 'f3'
 # Atalhos de Controle do Bot
 TECLA_START = 'f1'       # Inicia o loop de ataque
 TECLA_STOP  = 'f2'         # Para o bot e fecha o programa
+
+# Debug
+DEBUG_MODE = True         # Mostra a janela com o que o bot v
