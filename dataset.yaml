@@ -1,0 +1,7 @@
+
+path: C:\Users\777\Desktop\v3\dataset_yolo
+train: train/images
+val: val/images
+
+names:
+  0: Mob
