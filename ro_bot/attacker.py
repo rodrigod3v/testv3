@@ -52,38 +52,20 @@ def mover_mouse(ax, ay):
         pyautogui.moveTo(ax_travado, ay_travado, duration=random.uniform(0.04, 0.09))
 
 def atacar_mob(cx, cy):
-    """Clique direito no mob para atacar (padro RO)."""
+    """Apenas persegue o mob (Cliques desativados)."""
     ax, ay = coord_absoluta(cx, cy)
+    
+    # Adiciona uma leve variao para no ficar no centro exato sempre
     ax += random.randint(-3, 3)
     ay += random.randint(-3, 3)
 
     mover_mouse(ax, ay)
-    time.sleep(0.05) # Pequeno delay para o jogo registrar o foco
+    # time.sleep(0.05) 
     
-    if USE_ARDUINO and hardware_mouse:
-        hardware_mouse.click(button='right')
-    else:
-        pyautogui.click(button='right')
-
-    delay = COOLDOWN_ATAQUE + random.uniform(0, DELAY_VARIACAO)
-    time.sleep(delay)
+    # if USE_ARDUINO and hardware_mouse:
+    #     hardware_mouse.click(button='right')
+    # else:
+    #     pyautogui.click(button='right')
 
 def fazer_loot(cx, cy):
-    """Alt+clique para pegar item do cho."""
-    ax, ay = coord_absoluta(cx, cy)
-    
-    mover_mouse(ax, ay)
-    time.sleep(0.05)
-
-    if USE_ARDUINO and hardware_mouse:
-        pyautogui.keyDown('alt')
-        time.sleep(0.03)
-        hardware_mouse.click(button='left')
-        pyautogui.keyUp('alt')
-    else:
-        pyautogui.keyDown('alt')
-        time.sleep(0.03)
-        pyautogui.click(ax, ay)
-        pyautogui.keyUp('alt')
-    
     time.sleep(0.1)
