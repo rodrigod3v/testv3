@@ -29,15 +29,20 @@ def main():
     INTERVALO_FRAMES = 0.01  # YOLO pode ser pesado, ajuste conforme seu PC
 
     while not keyboard.is_pressed(TECLA_STOP):
-        # 1. Monitoramento de Memria (Autopot)
+        # 1. Monitoramento de Memria (Status no Terminal)
         if mem.esta_conectado():
             hp_atual = mem.get_hp_percent()
+            sp_atual = mem.ler_sp()
+            x, y = mem.ler_posicao()
+
             if hp_atual < AUTO_POT_HP_PERCENT:
                 keyboard.press_and_release(TECLA_POT_HP)
             
             agora = time.time()
-            if agora - ultimo_log_memoria > 2:
-                x, y = mem.ler_posicao()
+            if agora - ultimo_log_memoria > 0.5:
+                # Limpa a linha e imprime o status atualizado
+                status = f"\r[STATUS] HP: {hp_atual:.1f}% | SP: {sp_atual} | POS: {x}, {y} "
+                print(status, end="", flush=True)
                 ultimo_log_memoria = agora
 
         # 2. Inteligncia Artificial (YOLO)
