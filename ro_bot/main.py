@@ -6,40 +6,27 @@ from capture   import capturar
 from detector  import detectar_movimento, confirmar_com_template
 from attacker  import atacar_mob
 from memory_reader import MemoryReader
-from config import AUTO_POT_HP_PERCENT, TECLA_POT_HP, TECLA_START, TECLA_STOP, DEBUG_MODE, GAME_WINDOW
+from yolo_detector import YOLODetector
+from config import AUTO_POT_HP_PERCENT, TECLA_POT_HP, TECLA_START, TECLA_STOP, DEBUG_MODE, GAME_WINDOW, YOLO_MODEL, YOLO_CONFIDENCE
 
-# Carrega sprites dos mobs da pasta /sprites
-def carregar_templates(pasta="sprites"):
-    templates = {}
-    if not os.path.exists(pasta):
-        return templates
-    for nome in os.listdir(pasta):
-        if nome.endswith(".png"):
-            img = cv2.imread(os.path.join(pasta, nome))
-            if img is not None:
-                templates[nome] = img
-    return templates
+# ... (templates function if still needed, but YOLO usually replaces it)
 
 def main():
-    print(f"--- Ragnarok Bot MVP ---")
+    print(f"--- Ragnarok Bot YOLO Edition ---")
     if not GAME_WINDOW:
-        print("[!] Janela do Ragnarok NO encontrada. Verifique o ttulo no config.py")
+        print("[!] Janela do Ragnarok NO encontrada.")
         return
         
-    print(f"Janela detectada em: {GAME_WINDOW['left']}, {GAME_WINDOW['top']}")
-    print(f"Aguardando comando: [{TECLA_START.upper()}] para Iniciar | [{TECLA_STOP.upper()}] para Sair")
-    
-    templates = carregar_templates()
     mem = MemoryReader()
+    yolo = YOLODetector(YOLO_MODEL)
 
-    # Bloqueia at que a tecla de incio seja pressionada
+    print(f"[*] Aguardando [{TECLA_START.upper()}] para Iniciar...")
     keyboard.wait(TECLA_START)
-    print("\n[!] Bot em EXECUO!")
+    print("\n[!] Bot em EXECUO com YOLO!")
 
-    frame_ant = capturar()
     ultimo_ataque = 0
     ultimo_log_memoria = 0
-    INTERVALO_FRAMES = 0.05  # ~20 FPS de anlise
+    INTERVALO_FRAMES = 0.01  # YOLO pode ser pesado, ajuste conforme seu PC
 
     while not keyboard.is_pressed(TECLA_STOP):
         # 1. Monitoramento de Memria (Autopot)
@@ -53,41 +40,34 @@ def main():
                 x, y = mem.ler_posicao()
                 ultimo_log_memoria = agora
 
-        # 2. Viso Computacional (Ataque)
+        # 2. Inteligncia Artificial (YOLO)
         frame_atual = capturar()
-        mobs = detectar_movimento(frame_ant, frame_atual)
+        mobs = yolo.detectar(frame_atual, conf_threshold=YOLO_CONFIDENCE)
 
         if mobs:
-            if templates:
-                mobs = confirmar_com_template(frame_atual, mobs, templates)
+            # Debug Visual
+            if DEBUG_MODE:
+                yolo.desenhar_deteccoes(frame_atual, mobs)
 
-            if mobs:
-                # Debug Visual: Desenha nos mobs encontrados
-                if DEBUG_MODE:
-                    for (mx, my, ma) in mobs:
-                        # Desenha um quadrado baseado na rea (ma)
-                        r = int(ma**0.5) # Raio aproximado pela raiz da rea
-                        cv2.rectangle(frame_atual, (mx-r//2, my-r//2), (mx+r//2, my+r//2), (0, 255, 0), 2)
+            # Escolhe o mob com maior confiana (conf  o 3 item do tupla)
+            alvo = max(mobs, key=lambda m: m[2])
+            cx, cy = alvo[0], alvo[1]
 
-                alvo = max(mobs, key=lambda m: m[2])
-                cx, cy = alvo[0], alvo[1]
-
-                agora = time.time()
-                if agora - ultimo_ataque > 0.2:
-                    atacar_mob(cx, cy)
-                    ultimo_ataque = agora
+            agora = time.time()
+            if agora - ultimo_ataque > 0.3: # Delay maior para o YOLO
+                atacar_mob(cx, cy)
+                ultimo_ataque = agora
 
         # Mostrar janela de Debug
         if DEBUG_MODE:
-            cv2.imshow("Bot Vision - Debug", frame_atual)
+            cv2.imshow("Bot Vision - YOLO Debug", frame_atual)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        frame_ant = frame_atual
         time.sleep(INTERVALO_FRAMES)
 
     cv2.destroyAllWindows()
-    print("Bot finalizado com sucesso.")
+    print("Bot finalizado.")
 
 if __name__ == "__main__":
     main()

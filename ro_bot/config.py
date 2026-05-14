@@ -69,3 +69,7 @@ TECLA_STOP  = 'f2'         # Para o bot e fecha o programa
 
 # Debug
 DEBUG_MODE = True         # Mostra a janela com o que o bot v
+
+# Configuraes YOLO
+YOLO_MODEL = "yolov8n.pt" # Arquivo do modelo (.pt)
+YOLO_CONFIDENCE = 0.5      # Sensibilidade (0.0 a 1.0)
