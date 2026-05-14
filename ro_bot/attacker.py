@@ -18,15 +18,25 @@ def coord_absoluta(cx, cy):
     return ax, ay
 
 def mover_mouse(ax, ay):
-    """Move o mouse usando Arduino (relativo) ou PyAutoGUI (absoluto)."""
+    """Move o mouse com trava de segurana (clamping) dentro da janela."""
+    margem = 15 # Margem interna para evitar bordas
+    
+    min_x = GAME_WINDOW["left"] + margem
+    max_x = GAME_WINDOW["left"] + GAME_WINDOW["width"] - margem
+    min_y = GAME_WINDOW["top"] + margem
+    max_y = GAME_WINDOW["top"] + GAME_WINDOW["height"] - margem
+
+    # Fora as coordenadas a ficarem dentro do 'raio de execuo'
+    ax_travado = max(min_x, min(max_x, ax))
+    ay_travado = max(min_y, min(max_y, ay))
+
     if USE_ARDUINO and hardware_mouse:
-        # Pega a posio atual e calcula o deslocamento relativo
         cur_x, cur_y = pyautogui.position()
-        dx = ax - cur_x
-        dy = ay - cur_y
+        dx = ax_travado - cur_x
+        dy = ay_travado - cur_y
         hardware_mouse.move(dx, dy)
     else:
-        pyautogui.moveTo(ax, ay, duration=random.uniform(0.04, 0.09))
+        pyautogui.moveTo(ax_travado, ay_travado, duration=random.uniform(0.04, 0.09))
 
 def atacar_mob(cx, cy):
     """Clique direito no mob para atacar (padro RO)."""

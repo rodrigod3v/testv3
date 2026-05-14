@@ -1,12 +1,30 @@
-# Resoluo tpica do RO (ajuste para o seu cliente)
-GAME_WINDOW = {"top": 0, "left": 0, "width": 800, "height": 600}
+import pygetwindow as gw
 
-# Regies a IGNORAR (HUD do RO)
-# Ajuste conforme sua resoluo
+# Nome da Janela do RO (Ajuste se o seu servidor usar outro nome)
+WINDOW_TITLE = "Ragnarok" 
+
+def detectar_janela():
+    """Busca a janela do jogo e retorna suas coordenadas e tamanho."""
+    try:
+        win = gw.getWindowsWithTitle(WINDOW_TITLE)[0]
+        # Adicionamos offsets para ignorar as bordas da janela do Windows (Title bar)
+        return {
+            "top": win.top + 30, # Offset aproximado da barra de ttulo
+            "left": win.left + 8, 
+            "width": 1024,
+            "height": 768
+        }
+    except:
+        print(f"Janela '{WINDOW_TITLE}' no encontrada. Usando valores padro.")
+        return {"top": 0, "left": 0, "width": 1024, "height": 768}
+
+GAME_WINDOW = detectar_janela()
+
+# Regies a IGNORAR (HUD do RO para 1024x768)
 MASCARAS_EXCLUSAO = [
-    (0, 0, 800, 70),      # Barra superior (HP/SP/EXP)
-    (0, 530, 800, 70),    # Chat e hotkeys na base
-    (0, 0, 150, 600),     # Minimap lateral esquerdo
+    (0, 0, 1024, 90),       # Barra superior (HP/SP/EXP)
+    (0, 680, 1024, 88),    # Chat e hotkeys na base
+    (0, 0, 180, 768),      # Minimap lateral esquerdo
 ]
 
 # Configuraes de deteco
