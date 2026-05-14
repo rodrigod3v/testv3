@@ -38,3 +38,7 @@ OFFSETS = {
 # Configuraes de Autopot
 AUTO_POT_HP_PERCENT = 70  # Usa poo se HP < 70%
 TECLA_POT_HP = 'f1'
+
+# Atalhos de Controle do Bot
+TECLA_START = 'f10'       # Inicia o loop de ataque
+TECLA_STOP  = 'q'         # Para o bot e fecha o programa
